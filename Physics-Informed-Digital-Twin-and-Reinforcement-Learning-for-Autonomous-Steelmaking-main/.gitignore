@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv-wsl/
+.env
+mlruns/
+wandb/
+experiments/
+!.gitkeep
+.github/

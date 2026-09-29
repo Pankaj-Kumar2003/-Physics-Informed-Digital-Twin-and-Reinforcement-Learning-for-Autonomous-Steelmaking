@@ -1,0 +1,53 @@
+plant:
+  route: "EAF"
+  tap_temperature_c: 1650
+  ladle_heat_loss_c_per_min: 5
+  slag_basicity_target: 3.0
+  steel_mass_tonnes: 150
+
+alloys:
+  catalog:
+    - name: "FeSi"
+      elements: {Si: 0.75}
+      unit_cost_usd_per_kg: 1.95
+    - name: "FeMn"
+      elements: {Mn: 0.80}
+      unit_cost_usd_per_kg: 2.10
+    - name: "Ni"
+      elements: {Ni: 0.99}
+      unit_cost_usd_per_kg: 15.50
+    - name: "Mo"
+      elements: {Mo: 0.98}
+      unit_cost_usd_per_kg: 36.40
+
+optimization:
+  objectives:
+    - name: "cost"
+      weight: 0.4
+    - name: "grade_accuracy"
+      weight: 0.4
+    - name: "co2"
+      weight: 0.2
+  constraints:
+    - name: "composition_window"
+      tolerance_pct: 0.05
+    - name: "temperature_floor"
+      min_c: 1580
+
+rl:
+  algorithm: "ppo"
+  horizon_steps: 60
+  reward_weights:
+    grade_hit: 1.0
+    alloy_cost: -0.05
+    temp_penalty: -0.02
+    emissions: -0.01
+
+data:
+  twin_rollouts: 500
+  piml_train_ratio: 0.8
+  feature_set: ["temperature", "slag_feo", "slag_sio2", "carbon", "manganese"]
+
+logging:
+  experiment_tracker: "mlflow"
+  tracking_uri: "mlruns"
